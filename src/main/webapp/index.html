@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerstner Waves</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/three.min.js"></script>
+    <script type="text/javascript" src="js/gerstner.js"></script>
+    <script type="text/javascript">
+        function updateLabel(id, val) {
+            var elem = id.split('-')[0];
+            var elemId = id.split('-')[1];
+            $('#' + elem + 'Label-' + elemId).val(val);
+        }
+
+        function updateLabelDegrees(id, val) {
+            updateLabel(id, val + '°');
+        }
+
+        $(document).ready(function() {
+            $('#wavelength').slider();
+            $('#amplitude').slider();
+            $('#windAngle').slider();
+            $('#sidebar').dialog({
+                position: {
+                    at: 'left center'
+                },
+                width: 500,
+                height: 974
+            });
+
+            $('#add-wave').button({
+                icon: 'ui-icon-plus'
+            }).click(addWave);
+
+            addWave();
+
+            function getLastWaveIndex() {
+                var $nextWave = $('#sidebar fieldset').last();
+                var nextWave = 0;
+
+                if ($nextWave.length === 0) {
+                    nextWave = 1;
+                } else {
+                    nextWave = parseInt($nextWave.attr('id').split('wave-')[1]) + 1;
+                }
+                return nextWave;
+            }
+
+            function addWave() {
+                $('.control-group').each(function(index, element) {
+                    $(this).controlgroup(
+                            {
+                                direction: 'vertical'
+                            }
+                    );
+                });
+
+                var nextWave = getLastWaveIndex();
+
+                $('#sidebar').append(
+                        "<fieldset id='wave-" + nextWave + "'> " +
+                        "<legend>Wave " + nextWave + "</legend> " +
+                        "<div class='control-group'> " +
+                        "<input id='wavelengthNameLabel-" + nextWave + "' class='slider-label' type='text' value='Wavelength' /> " +
+                        "<input id='wavelength-" + nextWave + "' class='slider' type='range' min='0.01' max='50.00' step='0.1' value='1.00' oninput='updateLabel(this.id, this.value)' />" +
+                        "<input id='wavelengthLabel-" + nextWave + "' class='slider-label' type='number' value='1.00' />" +
+                        "<input id='amplitudeNameLabel-" + nextWave + "' class='slider-label' type='text' value='Amplitude' />" +
+                        "<input id='amplitude-" + nextWave + "' class='slider' type='range' min='0.01' max='1.00' step='0.01' value='1.00' oninput='updateLabel(this.id, this.value)' />" +
+                        "<input id='amplitudeLabel-" + nextWave + "' class='slider-label' type='number' value='1.00' />" +
+                        "<input id='windAngleNameLabel-" + nextWave + "' class='slider-label' type='text' value='Wind Angle' />" +
+                        "<input id='windAngle-" + nextWave + "' class='slider' type='range' min='0' max='359' step='1' value='0' oninput='updateLabelDegrees(this.id, this.value)' />" +
+                        "<input id='windAngleLabel-" + nextWave + "' class='slider-label' type='text' value='0°' />" +
+                        "</div>" +
+                        "</fieldset>"
+                );
+            }
+        });
+    </script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/ui-darkness/jquery-ui.css">
+    <style type="text/css">
+        .sidebar {
+            background-color: rgba(44, 44, 44, 0.89);
+            width: 0;
+        }
+        .slider-label {
+            width: 25%;
+        }
+    </style>
+</head>
+<body>
+<div id="sidebar" class="sidebar">
+    <div id="add-wave">
+
+    </div>
+</div>
+</body>
+</html>
